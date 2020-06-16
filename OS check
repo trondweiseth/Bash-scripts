@@ -1,0 +1,189 @@
+#############################################################################################
+#   Usage:                                                                                  #
+#   uname@bf-linbast][osl] /home/uname$ os host1.osl.basefarm.net, host1.osl.basefarm.net   #
+#   uname@bf-linbast][osl] /home/uname$ os 11.112.123.44, 11.112.123.45                     #
+#                                                                                           #
+#   Output:                                                                                 #
+#  ----------------------------------------------------------------                         #
+#  Host: host1.osl.basefarm.net. / IP: 11.112.123.44  ===Windows===                         #
+#  ----------------------------------------------------------------                         #
+#  ----------------------------------------------------------------                         #
+#  Host: host2.osl.basefarm.net. / IP: 11.112.123.45  ===Windows===                         #
+#  ----------------------------------------------------------------                         #
+#                                                                                           #
+#############################################################################################
+
+=========V5.0==========
+
+os () {
+  complete -o default -A hostname os
+
+  texteval(){
+    length=${#text}
+    line=$(for a in $(seq 1 $length); do echo -n '-'; done)
+  }
+  varset1(){
+    text="Host: $i / IP: $ip  ===Linux==="
+    t1="Linux"
+    texteval
+  }
+  varset2(){
+    text="Host: $i / IP: $ip  ===Windows==="
+    t1="Windows"
+    texteval
+  }
+  varset3(){
+    text="Host: $i / IP: $ip  ===No response==="
+    t1="No response"
+    texteval
+  }
+  outstring() {
+      echo -e "\e[92mHost\e[0m: \e[93m$i\e[0m / \e[92mIP\e[0m: \e[93m$ip\e[0m  \e[96m===\e[0m\e[92m$t1\e[0m\e[96m===\e[0m"
+  }
+
+ptest(){
+  if nping -c 1 $i -p 22 | grep "Failed: 0" &>/dev/null
+    then
+      varset1
+      echo
+      echo -e "\e[96m$line\e[0m"
+      outstring
+      echo -e "\e[96m$line\e[0m"
+
+  elif nping -c 1 $i -p 3389 | grep "Failed: 0" &>/dev/null
+    then
+      varset2
+      echo
+      echo -e "\e[96m$line\e[0m"
+      outstring
+      echo -e "\e[96m$line\e[0m"
+
+  else
+      varset3
+      echo
+      echo -e "\e[96m$line\e[0m"
+      outstring
+      echo -e "\e[96m$line\e[0m"
+  fi
+}
+
+  input=$(echo $* | tr -d ",")
+  if [ -z $input ]; then
+    read -p "Host: " input
+  fi
+
+  for host1 in $input; do {
+      if ipcheck=$(echo $host1 -t A | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"); then
+          host=$(host -t A $host1 | awk '{print $NF}')
+          ip=$ipcheck
+      else
+          host=$(hlookup $host1)
+          if [ -z $host ]; then
+              host=$(host -t A $host1 | awk '{print $NR}')
+          fi
+          ip=$(echo $(host $host 2>/dev/null) -t A | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
+      fi
+
+  for i in $host; do {
+    ptest
+    }; done
+  }; done
+}
+
+=========V4.0==========
+
+os () {
+host=$*
+res=$(echo $* | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
+if [[ $res ]]; then
+        host=$(host $host | awk '{print $NF}')
+        ip=$res
+else
+        ip=$(host $host | awk '{print $NF}')
+fi
+for i in $host; do {
+        if nping -c 1 $i -p 22 | grep "Failed: 0" &>/dev/null
+        then
+                echo
+                echo -e "\e[96m--------------------------------------------------------------------------------\e[0m"
+                printf "\e[92mHost\e[0m: \e[93m$i\e[0m / \e[92mIP\e[0m: \e[93m$ip\e[0m  \e[96m===\e[0m\e[92mLinux\e[0m\e[96m===\e[0m\n"
+                echo -e "\e[96m--------------------------------------------------------------------------------\e[0m"
+        elif nping -c 1 $i -p 3389 | grep "Failed: 0" &>/dev/null
+        then
+                echo
+                echo -e "\e[96m--------------------------------------------------------------------------------\e[0m"
+                printf "\e[92mHost\e[0m: \e[93m$i\e[0m / \e[92mIP\e[0m: \e[93m$ip\e[0m  \e[96m===\e[0m\e[92mWindows\e[0m\e[96m===\e[0m\n"
+                echo -e "\e[96m--------------------------------------------------------------------------------\e[0m"
+        else
+                echo
+                echo -e "\e[96m---------------------------------------------------------------\e[0m"
+                echo -e "\e[92mHost\e[0m:\e[93m$i\e[0m \e[96m==\e[0m\e[31mNo response\e[0m\e[96m==\e[0m"
+                echo -e "\e[96m---------------------------------------------------------------\e[0m"
+        fi
+}; done
+}
+
+
+
+=========V3.0==========
+
+os () {
+host=$1
+for i in $host; do {
+        if nping -c 1 $i -p 22 | grep "Failed: 0" &>/dev/null
+        then
+                echo
+                echo "-----------------------------------------------------"
+                printf "$i  ==Linux==\n"
+                echo "-----------------------------------------------------"
+        elif nping -c 1 $i -p 3389 | grep "Failed: 0" &>/dev/null
+        then
+                echo
+                echo "-----------------------------------------------------"
+                printf "$i  ==Windows==\n"
+                echo "-----------------------------------------------------"
+        else
+                echo
+                echo "-----------------------------------------------------"
+                echo "$i ==No response=="
+                echo "-----------------------------------------------------"
+        fi
+}; done
+}
+
+
+
+=========V2.0==========
+
+os () {
+printf "Host: "
+read host
+for i in $host; do {
+        if nping -c 1 $i -p 22 | grep "Failed: 0" &>/dev/null
+        then
+                printf "$i  ==Linux==\n"
+        elif nping -c 1 $i -p 3389 | grep "Failed: 0" &>/dev/null
+        then    printf "$i  ==Windows==\n"
+        else
+                echo "$i ==No response=="
+        fi
+}; done
+}
+
+=========V1.0==========
+os () {
+printf "Host: "
+read host
+
+for port in 22 3389; do nping $host -p $port; done &>/dev/null
+
+if nping -c 1 $host -p 22 | grep "Failed: 0" &>/dev/null
+then
+        echo "Linux"
+elif nping -c 1 $host -p 3389 | grep "Failed: 0" &>/dev/null
+ then
+    echo "Windows"
+else
+        echo "No response"
+fi
+}
