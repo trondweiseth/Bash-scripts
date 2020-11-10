@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ~/
+
 hlookup() {
   complete -o default -A hostname hlookup
   input=$*
@@ -7,8 +9,9 @@ hlookup() {
   cat hosts.txt | egrep $host
 }
 
+
 vim nodelist1.csv
-gethostfromcve ~/nodelist1.csv > nodelist
+cat nodelist1.csv | cut -d ";" -f 5 | cut -d " " -f 2 | tr -d '"' | uniq > nodelist
 
 for h in $(cat nodelist | cut -d "." -f 1 | cut -d "." -f 1 | sed 's/.$//'); do
     hlookup $h >> clusterlist1
