@@ -25,7 +25,7 @@ rm clusterlist1
 bastion-ssh -l root 2> /dev/null
 line1="================================"
 line2="--------------------------------"
-execute() {
+exec() {
         dszres=$(ssh -l root -o LogLevel=QUIET -o ConnectTimeout=3 -o BatchMode=yes $1 "df -h /var")
 
         if [ $? -eq 0 ]; then
@@ -56,5 +56,5 @@ execute() {
 }
 
 for h in $(cat clusterlist); do
-        execute $h | tee -a diskextention.log
+        exec $h | tee -a diskextention.log
 done
