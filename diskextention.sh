@@ -1,8 +1,5 @@
 #!/bin/bash
 
-(damsearch -LLL -x objectclass=damservicehost cn | grep -v sth | grep ^cn: | sed 's/cn: //' > "$HOME/hosts.txt" &)
-export HOSTFILE="$HOME/hosts.txt"
-
 hlookup() {
   complete -o default -A hostname hlookup
   input=$*
