@@ -1,11 +1,12 @@
 #!/bin/bash
 weather() {
         function usage {
-        echo "Usage: $(basename $0) [-abcd]" 2>&1
+        echo "Usage: $(basename $0) [-hfmd]" 2>&1
         echo '   -h   shows this help text'
         echo '   -f   shows full weather report for 3 days'
         echo '   -m   shows moon remort'
         echo '   -d   shows weather report for today'
+        break
         }
 
         if [[ ${#} -eq 0 ]]; then
