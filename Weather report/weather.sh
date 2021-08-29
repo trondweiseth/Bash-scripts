@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define default location
-weatherlocation="baerum"
+weatherlocation="oslo"
 
 function usage {
         echo 'USAGE:'
