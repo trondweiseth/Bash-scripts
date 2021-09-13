@@ -6,8 +6,7 @@
 	}
 
 	if [ -z $1 ]; then
-		echo "Missing ip!"
-		echo "Sytnax: [pingsweep 192.168.1.1 24] [pingsweep 192.168.1.1 16]"
+		echo "pingsweep.sh: usage error: address required. Usage: [pingsweep 192.168.1.1 24] [pingsweep 192.168.1.1 16]"
 	else
 
 		if [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
