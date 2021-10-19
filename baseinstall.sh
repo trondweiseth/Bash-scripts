@@ -14,6 +14,8 @@ sudo apt install wpscan -y &&
 sudo apt install telnet -y &&
 sudo apt install sqlmap -y &&
 sudo apt install recon-ng -y &&
+python3 -m pip install virtualenv &&
+git clone https://github.com/SecureAuthCorp/impacket.git && cd impacket && python3 -m install . && cd
 wget https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb && dpkg -i lsd*.deb && rm lsd*.deb &&
 sudo chsh -s /bin/zsh && source .zshrc &&
 sudo apt update -y && sudo apt upgrade -y
