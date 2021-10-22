@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~
+cd $HOME && mkdir Tools && cd Tools &&
 sudo apt dist-upgrade -y && sudo apt update -y && sudo apt upgrade -y &&
 sudo apt install vim -y
 sudo apt install htop -y
@@ -17,5 +17,10 @@ sudo apt install recon-ng -y &&
 python3 -m pip install virtualenv &&
 git clone https://github.com/SecureAuthCorp/impacket.git && cd impacket && python3 -m install . && cd
 wget https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb && dpkg -i lsd*.deb && rm lsd*.deb &&
+git clone https://github.com/SecureAuthCorp/impacket.git &&
+git clone https://github.com/fox-it/BloodHound.py.git &&
+sudo gem install winrm winrm-fs stringio logger fileutils
+git clone https://github.com/Hackplayers/evil-winrm.git &&
+git clone https://github.com/SpiderLabs/Responder.git &&
 sudo chsh -s /bin/zsh && source .zshrc &&
 sudo apt update -y && sudo apt upgrade -y
