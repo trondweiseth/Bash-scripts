@@ -1,4 +1,4 @@
-# Script for autofill password with SSH login.
+# Script for non-interactive SSH login.
 
 This script can be used to log in without having to deal with password prompt for ssh.
 
