@@ -1,40 +1,60 @@
-#!/bin/bash
+weather() {
 
-# Define default location
-weatherlocation="oslo"
+        FULL=unset
+        MOON=unset
+        DAY=unset
 
-function usage {
-        echo 'USAGE:'
-        echo "    weather [FLAGS] [LOCATION]..."
-        echo
-        echo 'FLAGS:'
-        echo '    -h   shows this help text'
-        echo '    -f   shows full weather report for 3 days'
-        echo '    -m   shows moon remort'
-        echo '    -d   shows weather report for today'
-        echo '    -l   Setting the location'
-        break
-}
+        # Define default location
+        weatherlocation="baerum"
 
-# Getting weather report if no args are provided
-if [ $# -eq 0 ]; then
-         curl http://wttr.in/$weatherlocation?0F
-fi
-
-# Define list of arguments expected in the input
-while getopts "l:hfmdl" arg; do
-        case $arg in
-                l) weatherlocation="$OPTARG" ;;
-                h) usage ;;
-                f) curl -s "https://wttr.in/$weatherlocation?F" ;;
-                m) curl -s "https://wttr.in/Moon?F" ;;
-                d) curl -s "https://wttr.in/$weatherlocation?1F" ;;
-                ?)
-                echo "Invalid option: -${OPTARG}."
+        usage() {
+                echo 'USAGE:'
+                echo "    weather [OPTION]"
                 echo
-                usage
+                echo 'Options:'
+                echo '    -h | --help      Shows this help text'
+                echo '    -f | --full      Shows full weather report for 3 days'
+                echo '    -m | --moon      Shows moon remort'
+                echo '    -d | --day       Shows weather report for today'
+                echo '    -l | --location  Setting the location'
                 break
-                ;;
-        esac
-done
-shift $((OPTIND-1))
+        }
+
+        # Getting weather report if no args are provided
+        if [ $# -eq 0 ] ||  [ ]; then
+            curl http://wttr.in/$weatherlocation?0F
+        fi
+
+        PARSED_ARGUMENTS=$(getopt -a -n weather -o hfmdl: --longoptions help,full,moon,day,location: -- "$@")
+
+        # Getting weather report if no args are provided
+        VALID_ARGUMENTS=$?
+        if [ "$VALID_ARGUMENTS" != "0" ]; then
+            curl http://wttr.in/$weatherlocation?0F
+        fi
+
+        # Define list of arguments expected in the input
+        while :
+        do
+            case $1 in
+                -l | --location) weatherlocation="$2" ; shift 2 ;;
+                -h | --help) usage ; shift ;;
+                -f | --full) FULL=true ; shift ;;
+                -m | --moon) MOON=true ; shift ;;
+                -d | --day)  DAY=true ; shift ;;
+                *) break ;;
+            esac
+        done
+
+        if [ $FULL = true ]; then
+            curl -s "https://wttr.in/$weatherlocation?F"
+        fi
+
+        if [ $MOON = true ]; then
+            curl -s "https://wttr.in/Moon?F"
+        fi
+
+        if [ $DAY = true ]; then
+            curl -s "https://wttr.in/$weatherlocation?1F"
+        fi
+}
