@@ -18,7 +18,7 @@ weather() {
                 echo '    -d | --day       Shows weather report for today'
                 echo '    -l | --location  Setting the location'
                 break
-        }
+        } 2>/dev/null
 
         # Getting weather report if no args are provided
         if [ $# -eq 0 ] ||  [ ]; then
