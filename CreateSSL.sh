@@ -6,9 +6,13 @@ FQDN=$1
 DIR=$(pwd)
 KEYLINE="----------KEY----------"
 CSRLINE="----------CSR----------"
+COUNTRY="NO"
+STATE="Oslo"
+LOCALITYNAME="Oslo"
+ORGANIZATION="Contoso"
 
 usage() {
-	echo 'Syntax: CreateSSL.sh <FQDN> [ [-s]/[-subdomain] <DNS1,DNS2> ]'
+	echo 'Syntax: CreateSSL.sh <FQDN> [[ -d ][ --directory ] <directory>] [[ -s ][ --subdomain ] <domain1,domain2>] [[ -C ][ --country ] <country>] [[ -S ][ --state ] <state>] [[ -L ][ --localityname ] <localityname>] [[ -O ][ --organization ] <organization>]'
 	exit 1
 }
 
@@ -19,10 +23,10 @@ opensslConfig() {
 	echo "req_extensions = v3_req" >> $DIR/${FQDN}.conf
 	echo "prompt = no" >> $DIR/${FQDN}.conf
 	echo "[req_distinguished_name]" >> $DIR/${FQDN}.conf
-	echo "C = NO" >> $DIR/${FQDN}.conf
-	echo "ST = Oslo" >> $DIR/${FQDN}.conf
-	echo "L = Oslo" >> $DIR/${FQDN}.conf
-	echo "O = Contoso" >> $DIR/${FQDN}.conf
+	echo "C = $COUNTRY" >> $DIR/${FQDN}.conf
+	echo "ST = $STATE" >> $DIR/${FQDN}.conf
+	echo "L = $LOCALITYNAME" >> $DIR/${FQDN}.conf
+	echo "O = $ORGANIZATION" >> $DIR/${FQDN}.conf
 	echo "CN = $FQDN" >> $DIR/${FQDN}.conf
 	echo "[v3_req]" >> $DIR/${FQDN}.conf
 	echo "keyUsage = keyEncipherment, dataEncipherment" >> $DIR/${FQDN}.conf
@@ -57,20 +61,24 @@ fi
 
 printf "Enter PEM pass phrase: " && read -s KEYPASS
 
-PARSED_ARGUMENTS=$(getopt -a -n OpenSSLCert -o hs: --longoptions help,subdomain: -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n OpenSSLCert -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
 
 # Define list of arguments expected in the input
 while :
 do
 	case $1 in
+		-d | --directory) DIR="$2" ; shift 2 ;;
+		-C | --country) COUNTRY="$2" ; shift 2 ;;
+		-S | --state) STATE="$2" ; shift 2 ;;
+		-L | --localityname) LOCALITYNAME="$2" ; shift 2 ;;
+		-O | --organization) ORGANIZATION="$2" ; shift 2 ;;
 		-s | --subdomain) DNS="$2" ; createSubdomains ; shift 2 ;;
-		-h | --help) usage ; shift ;;
 		*) break ;;
 	esac
 done
 
 if [ -z "$DNS" ]; then
-	openssl req -new -newkey rsa:2048 -nodes -keyout $DIR/$FQDN.temp.key -out $DIR/$FQDN.csr -subj "/C=NO/ST=Oslo/L=Oslo/O=Contoso/CN=$FQDN" && openssl rsa -aes256 -passout pass:$KEYPASS -in $DIR/$FQDN.temp.key -out $DIR/$FQDN.key && rm $DIR/$FQDN.temp.key
+	openssl req -new -newkey rsa:2048 -nodes -keyout $DIR/$FQDN.temp.key -out $DIR/$FQDN.csr -subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITYNAME/O=$ORGANIZATION/CN=$FQDN" && openssl rsa -aes256 -passout pass:$KEYPASS -in $DIR/$FQDN.temp.key -out $DIR/$FQDN.key && rm $DIR/$FQDN.temp.key
 	echo
 	echo $CSRLINE
 	openssl req -text -noout -verify -in  $DIR/$FQDN.csr
