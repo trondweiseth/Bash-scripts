@@ -4,6 +4,7 @@ OLD_IFS=$IFS
 IFS=','
 FQDN=$1
 DIR=$(pwd)
+REGEXPAT="^-[a-zA-Z]+"
 KEYLINE="----------KEY----------"
 CSRLINE="----------CSR----------"
 COUNTRY="NO"
@@ -52,7 +53,7 @@ createSubdomains() {
 	rm $DIR/$FQDN.conf
 }
 
-if [ -z $FQDN ] || [[ "$FQDN" =~ ['-'] ]]; then
+if [ -z $FQDN ] || [[ "$FQDN" =~ $REGEXPAT ]]; then
 	usage
 else
 	shift 1
@@ -60,7 +61,7 @@ fi
 
 printf "Enter PEM pass phrase: " && read -s KEYPASS
 
-PARSED_ARGUMENTS=$(getopt -a -n CreateSSL.sh -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n CreateSSLCert.sh -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
 
 # Define list of arguments expected in the input
 while :
