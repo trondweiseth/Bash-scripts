@@ -49,7 +49,7 @@ createSubdomains() {
 	echo
 	echo $KEYLINE
 	cat  $DIR/$FQDN.key
-	r#m $DIR/$FQDN.conf
+	rm $DIR/$FQDN.conf
 }
 
 if [ -z $FQDN ] || [[ "$FQDN" =~ ['-'] ]]; then
