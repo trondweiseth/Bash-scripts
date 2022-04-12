@@ -61,7 +61,7 @@ fi
 
 printf "Enter PEM pass phrase: " && read -s KEYPASS
 
-PARSED_ARGUMENTS=$(getopt -a -n OpenSSLCert -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n CreateSSL -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
 
 # Define list of arguments expected in the input
 while :
@@ -73,6 +73,7 @@ do
 		-L | --localityname) LOCALITYNAME="$2" ; shift 2 ;;
 		-O | --organization) ORGANIZATION="$2" ; shift 2 ;;
 		-s | --subdomain) DNS="$2" ; createSubdomains ; shift 2 ;;
+		-h | --help) usage ; shift 1 ;;
 		*) break ;;
 	esac
 done
