@@ -37,7 +37,6 @@ opensslConfig() {
 
 createSubdomains() {
 	opensslConfig
-
 	COUNT=1
 	for i in $DNS; do
 		echo "DNS.$COUNT = $i" >> $DIR/${FQDN}.conf
