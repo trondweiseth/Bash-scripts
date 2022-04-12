@@ -60,7 +60,7 @@ fi
 
 printf "Enter PEM pass phrase: " && read -s KEYPASS
 
-PARSED_ARGUMENTS=$(getopt -a -n CreateSSLCert.sh -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
+PARSED_ARGUMENTS=$(getopt -a -n CreateSSL.sh -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
 
 # Define list of arguments expected in the input
 while :
