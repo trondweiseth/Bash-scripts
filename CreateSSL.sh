@@ -13,7 +13,7 @@ LOCALITYNAME="Oslo"
 ORGANIZATION="Contoso"
 
 usage() {
-	echo 'Syntax: CreateSSL.sh <FQDN> [[ -d ][ --directory ] <directory>] [[ -s ][ --subdomain ] <domain1,domain2>] [[ -C ][ --country ] <country>] [[ -S ][ --state ] <state>] [[ -L ][ --localityname ] <localityname>] [[ -O ][ --organization ] <organization>]'
+	echo 'Syntax: pssl.sh <FQDN> [[ -d ][ --directory ] <directory>] [[ -s ][ --subdomain ] <domain1,domain2>] [[ -C ][ --country ] <country>] [[ -S ][ --state ] <state>] [[ -L ][ --localityname ] <localityname>] [[ -O ][ --organization ] <organization>]'
 	exit 1
 }
 
@@ -60,7 +60,8 @@ else
 fi
 
 printf "CN: $FQDN\n"
-printf "Enter PEM pass phrase: " && read -s KEYPASS
+unset KEYPASS
+printf "Enter PEM pass phrase: " && read -r KEYPASS
 
 PARSED_ARGUMENTS=$(getopt -a -n CreateSSLCert.sh -o d:C:S:L:O:s:d:h --longoptions directory:,country:,state:,localityname:,organization:,subdomain:,help -- "$@")
 
@@ -86,6 +87,6 @@ if [ -z "$DNS" ]; then
 	openssl req -text -noout -verify -in  $DIR/$FQDN.csr
 	echo
 	echo $KEYLINE
-	cat  $DIR/$FQDN.key
+	cat $DIR/$FQDN.key
 fi
 IFS=$OLD_IFS
