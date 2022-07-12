@@ -28,3 +28,7 @@ git clone https://github.com/Hackplayers/evil-winrm.git &&
 git clone https://github.com/SpiderLabs/Responder.git &&
 sudo chsh -s /bin/zsh && source .zshrc &&
 sudo apt update -y && sudo apt upgrade -y
+echo "alias ls='lsd'" >> ~/.bashrc
+echo "alias ll='lsd -al'" >> ~/.bashrc
+echo "alias lt='ls --tree'" >> ~/.bashrc
+source ~/.bashrc
